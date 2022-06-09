@@ -3,7 +3,9 @@
 #![feature(custom_test_frameworks)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
+#![feature(abi_x86_interrupt)]
 
+pub mod interrupts;
 use core::panic::PanicInfo;
 mod serial;
 mod vga_buffer;
@@ -13,6 +15,7 @@ pub extern "C" fn _start() -> ! {
     println!("Hello World{}", "!");
     #[cfg(test)]
     test_main();
+    init();
     loop {}
 }
 
@@ -80,4 +83,8 @@ where
         self();
         serial_println!("[ok]");
     }
+}
+
+pub fn init(){
+    interrupts::init_idt();
 }
